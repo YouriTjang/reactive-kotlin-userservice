@@ -1,4 +1,4 @@
-package nl.codecentric.impactmapping
+package nl.codecentric.impactmapping.userservice
 
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
