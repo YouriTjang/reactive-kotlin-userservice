@@ -1,16 +1,14 @@
 package nl.codecentric.impactmapping.dummyclient
 
-import nl.codecentric.impactmapping.userservice.User
+import com.mongodb.reactivestreams.client.MongoClient
+import com.mongodb.reactivestreams.client.MongoClients
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
-import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToFlux
-import reactor.core.Disposable
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 
 @SpringBootApplication
-open class DummyClientApplication {
+open class DummyClientApplication(){
 
     companion object {
         @JvmStatic
@@ -22,18 +20,12 @@ open class DummyClientApplication {
     }
 
     @Bean
-    fun client(): WebClient {
-        return WebClient.create("http://localhost:8080")
+    fun mongoClient(): MongoClient {
+        return MongoClients.create("mongodb://localhost:27017")
     }
 
     @Bean
-    fun demo(client: WebClient): Disposable {
-           return  client
-                    .get()
-                    .uri("/userflux")
-                    .accept(MediaType.TEXT_EVENT_STREAM)
-                    .exchange()
-                    .flatMap { it.bodyToFlux(User::class) }
-                    .subscribe(::println)
+    fun reactiveMongoTemplate(): ReactiveMongoTemplate {
+        return ReactiveMongoTemplate(mongoClient(), "impactmapping")
     }
 }
